@@ -126,7 +126,7 @@ QDRANT_API_KEY=your_qdrant_api_key
 
 📜 Conclusion
 
-This project demonstrates how AI and Retrieval-Augmented Generation can transform enterprise support systems by providing accurate, fast, and context-aware responses, thereby improving efficiency and productivity.
+This project presents an AI-Based Assistance System for Enterprise Support using Retrieval-Augmented Generation (RAG), which effectively combines information retrieval with advanced language models to provide accurate and context-aware responses. The system improves the efficiency of enterprise support by reducing manual effort, minimizing response time, and delivering reliable information from large document collections. By using vector databases and semantic search, it overcomes the limitations of traditional keyword-based systems. The project demonstrates the practical implementation of modern AI techniques in real-world applications and highlights its potential to enhance productivity, scalability, and user experience in enterprise environments.
 
 ---
 
@@ -142,8 +142,6 @@ venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 python app.py
 
-
----
 
 
 
