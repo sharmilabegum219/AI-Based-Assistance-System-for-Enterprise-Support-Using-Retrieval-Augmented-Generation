@@ -116,6 +116,7 @@ QDRANT_API_KEY=your_qdrant_api_key
 
 ---
 
+
 ## ▶️ How to Run
 ```bash
 git clone https://github.com/your-username/your-repo-name.git
@@ -126,6 +127,7 @@ venv\Scripts\activate   # Windows
 
 pip install -r requirements.txt
 python app.py
+
 
 ---
 
