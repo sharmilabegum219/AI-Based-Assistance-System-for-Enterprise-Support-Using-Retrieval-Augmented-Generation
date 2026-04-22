@@ -117,10 +117,16 @@ QDRANT_API_KEY=your_qdrant_api_key
 ---
 
 🚀 Future Enhancements
-Voice-based assistant
-Mobile application
-Real-time data updates
-Advanced AI models
+- Voice-based assistant
+- Mobile application
+- Real-time data updates
+- Advanced AI models
+
+---
+
+📜 Conclusion
+
+This project demonstrates how AI and Retrieval-Augmented Generation can transform enterprise support systems by providing accurate, fast, and context-aware responses, thereby improving efficiency and productivity.
 
 ---
 
@@ -136,12 +142,6 @@ venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 python app.py
 
-
----
-
-📜 Conclusion
-
-This project demonstrates how AI and Retrieval-Augmented Generation can transform enterprise support systems by providing accurate, fast, and context-aware responses, thereby improving efficiency and productivity.
 
 ---
 
