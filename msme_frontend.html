@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MSME Assistant — India</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#080810;--sb:#0d0d18;--surface:#111122;--surface2:#161628;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --text:#e8e8f0;--text2:#9090b0;--text3:#5a5a7a;
+  --accent:#7c6aff;--accent2:#5b4de0;--accent-glow:rgba(124,106,255,0.2);
+  --accent-soft:rgba(124,106,255,0.08);
+  --green:#22d3a0;--amber:#f59e0b;--red:#f87171;--blue:#60a5fa;--teal:#2dd4bf;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --r:12px;--r-sm:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;display:flex;height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px}
+
+/* SIDEBAR */
+.sidebar{width:268px;background:var(--sb);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100vh;position:relative;overflow:hidden}
+.sidebar::before{content:'';position:absolute;top:-80px;left:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(124,106,255,0.12) 0%,transparent 70%);pointer-events:none}
+.sb-head{padding:20px 16px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;position:relative;z-index:1}
+
+/* ══ AI LOGO ══ */
+.logo-wrap{width:40px;height:40px;background:linear-gradient(135deg,#1a1535 0%,#0d0d1f 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 1.5px rgba(124,106,255,0.4),0 0 24px rgba(124,106,255,0.3);position:relative;overflow:hidden}
+.logo-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(124,106,255,0.25),transparent 60%)}
+.logo-svg{width:24px;height:24px;position:relative;z-index:1}
+
+.logo-title{font-family:var(--font-head);font-size:14px;font-weight:800;color:var(--text);letter-spacing:0.02em}
+.logo-sub{font-size:10.5px;color:var(--text3);margin-top:1px;letter-spacing:0.03em}
+.sb-scroll{flex:1;overflow-y:auto;padding:14px 10px}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.new-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;background:var(--accent-soft);border:1px solid rgba(124,106,255,0.25);border-radius:var(--r-sm);color:#b8aaff;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:20px;transition:all 0.18s}
+.new-btn:hover{background:rgba(124,106,255,0.14);border-color:rgba(124,106,255,0.4);color:#ccc0ff;box-shadow:0 0 16px rgba(124,106,255,0.12)}
+.new-btn svg{width:14px;height:14px;flex-shrink:0}
+.sb-label{font-family:var(--font-head);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 8px 7px;display:block}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r-sm);font-size:12.5px;color:var(--text2);cursor:pointer;transition:all 0.14s;margin-bottom:1px;border:1px solid transparent;min-width:0}
+.sb-item:hover{background:var(--surface);color:var(--text);border-color:var(--border)}
+.sb-item.active{background:var(--accent-soft);border-color:rgba(124,106,255,0.2);color:#b8aaff}
+.sb-item svg{flex-shrink:0;opacity:0.5;width:13px;height:13px}
+.sb-item.active svg,.sb-item:hover svg{opacity:0.8}
+.sb-item .sb-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.sb-item .sb-del{opacity:0;font-size:11px;color:var(--text3);padding:1px 4px;border-radius:3px;flex-shrink:0;transition:all 0.12s;line-height:1}
+.sb-item:hover .sb-del{opacity:1}
+.sb-item .sb-del:hover{background:rgba(248,113,113,0.15);color:var(--red)}
+.sb-divider{height:1px;background:var(--border);margin:10px 8px 12px}
+.sb-foot{padding:12px 10px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r-sm);cursor:pointer;transition:background 0.14s;border:1px solid transparent}
+.user-row:hover{background:var(--surface);border-color:var(--border)}
+.uavatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c6aff,#a78bff);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-size:13px;font-weight:700;flex-shrink:0;box-shadow:0 0 12px rgba(124,106,255,0.3)}
+.uinfo-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.3}
+.uinfo-plan{font-size:10.5px;color:var(--text3)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);position:relative}
+.main::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 70% 10%,rgba(124,106,255,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 20% 80%,rgba(34,211,160,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+/* TOPBAR */
+.topbar{padding:12px 22px;background:rgba(13,13,24,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:2}
+.model-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-family:var(--font-head);font-size:12.5px;font-weight:600;color:var(--text2);letter-spacing:0.02em}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);transition:all 0.4s;flex-shrink:0}
+.status-dot.online{background:var(--green);box-shadow:0 0 8px rgba(34,211,160,0.6);animation:pdot 2.5s ease-in-out infinite}
+@keyframes pdot{0%,100%{box-shadow:0 0 5px rgba(34,211,160,0.4)}50%{box-shadow:0 0 14px rgba(34,211,160,0.7)}}
+.stat-badge{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11.5px;color:var(--text2);font-family:var(--font-head);font-weight:500}
+.stat-badge b{color:var(--accent);font-weight:700}
+
+/* STATS STRIP */
+.stats-strip{display:flex;align-items:center;gap:16px;padding:7px 22px;background:rgba(13,13,24,0.6);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;z-index:2;position:relative}
+.stats-strip::-webkit-scrollbar{height:0}
+.si{display:flex;align-items:center;gap:6px;white-space:nowrap;font-family:var(--font-head);font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.03em;text-transform:uppercase}
+.si b{color:var(--text2);font-weight:700}
+.ss{width:1px;height:14px;background:var(--border);flex-shrink:0}
+
+/* CHAT */
+.chat-area{flex:1;overflow-y:auto;position:relative;z-index:1}
+.msgs-inner{max-width:780px;margin:0 auto;padding:32px 24px 20px;display:flex;flex-direction:column;gap:0}
+
+/* WELCOME */
+.welcome{text-align:center;padding:32px 20px 40px;animation:fadeUp 0.5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.w-badge{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid rgba(124,106,255,0.2);border-radius:20px;padding:5px 14px;font-size:11.5px;color:#b8aaff;font-family:var(--font-head);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:18px}
+.w-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(34,211,160,0.6);animation:pdot 2.5s ease-in-out infinite}
+.welcome h1{font-family:var(--font-head);font-size:36px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-0.03em;line-height:1.15}
+.welcome h1 .hi{color:var(--accent)}
+.welcome p{font-size:14px;color:var(--text2);max-width:420px;margin:0 auto 24px;line-height:1.65;font-weight:300}
+.tpills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:24px}
+.tpill{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.16s;font-family:var(--font-head);font-weight:500}
+.tpill:hover{background:var(--accent-soft);border-color:rgba(124,106,255,0.3);color:#b8aaff}
+
+/* CARDS GRID */
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:740px;margin:0 auto}
+.wcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:left;cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden}
+.wcard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.18s}
+.wcard:hover{background:var(--surface2);border-color:rgba(124,106,255,0.2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.wcard:hover::after{opacity:1}
+.wcard-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.wcard strong{display:block;font-family:var(--font-head);font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+.wcard p{font-size:11px;color:var(--text3);line-height:1.45}
+
+/* SCHEME DETAIL PANEL */
+.scheme-panel{display:none;position:fixed;inset:0;z-index:100;background:rgba(5,5,14,0.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease}
+.scheme-panel.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sp-box{background:var(--sb);border:1px solid var(--border2);border-radius:18px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;padding:0;box-shadow:0 32px 80px rgba(0,0,0,0.6)}
+.sp-box::-webkit-scrollbar{width:4px}
+.sp-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px}
+.sp-header{padding:22px 24px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:14px;position:sticky;top:0;background:var(--sb);z-index:2;border-radius:18px 18px 0 0}
+.sp-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.sp-title-wrap{flex:1}
+.sp-title{font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.02em}
+.sp-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+.sp-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.14s;flex-shrink:0}
+.sp-close:hover{background:rgba(248,113,113,0.12);color:var(--red);border-color:rgba(248,113,113,0.3)}
+.sp-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:18px}
+.sp-desc{font-size:14px;color:var(--text2);line-height:1.7;padding:14px 16px;background:rgba(124,106,255,0.05);border-left:3px solid var(--accent);border-radius:0 8px 8px 0}
+.sp-section{display:flex;flex-direction:column;gap:8px}
+.sp-section-title{font-family:var(--font-head);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);display:flex;align-items:center;gap:6px}
+.sp-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.sp-items{display:flex;flex-direction:column;gap:6px}
+.sp-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.5}
+.sp-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.sp-item strong{color:var(--text);font-weight:500}
+.sp-tags{display:flex;flex-wrap:wrap;gap:6px}
+.sp-tag{padding:4px 12px;border-radius:20px;font-size:11.5px;font-family:var(--font-head);font-weight:600;letter-spacing:0.02em}
+.sp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sp-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.sp-stat-val{font-family:var(--font-head);font-size:18px;font-weight:800;line-height:1.1;margin-bottom:3px}
+.sp-stat-lbl{font-size:10.5px;color:var(--text3);font-family:var(--font-head);font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+.sp-ask-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;background:linear-gradient(135deg,var(--accent),#a78bff);border:none;border-radius:10px;color:#fff;font-family:var(--font-head);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.04em;transition:all 0.16s;margin-top:4px;box-shadow:0 0 20px rgba(124,106,255,0.3)}
+.sp-ask-btn:hover{transform:translateY(-1px);box-shadow:0 4px 24px rgba(124,106,255,0.5)}
+
+/* DATE SEP */
+.date-sep{display:flex;align-items:center;gap:10px;margin:16px 0 8px}
+.ds-line{flex:1;height:1px;background:var(--border)}
+.ds-text{font-size:11px;color:var(--text3);font-family:var(--font-head);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap}
+
+/* MESSAGES */
+.msg{display:flex;gap:13px;padding:14px 0;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,0.03);animation:msgIn 0.22s ease both}
+.msg:last-child{border-bottom:none}
+.msg.user{flex-direction:row-reverse}
+@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--font-head);margin-top:2px}
+.av.ai{background:linear-gradient(135deg,var(--accent) 0%,#a78bff 100%);color:#fff;box-shadow:0 0 14px rgba(124,106,255,0.35);font-size:11px}
+.av.usr{background:var(--surface2);border:1px solid var(--border2);color:var(--text2)}
+.bubble{max-width:82%;font-size:14.5px;line-height:1.78;color:var(--text)}
+.msg.ai .bubble{padding:2px 0}
+.msg.user .bubble{background:var(--surface2);border:1px solid var(--border);border-radius:18px 18px 4px 18px;padding:11px 16px;font-size:14px;color:#d8d8ee}
+.bubble p{margin-bottom:0}
+.bubble p+p{margin-top:8px}
+.bubble strong{color:#c8c0ff;font-weight:500}
+.msg-meta{display:flex;align-items:center;gap:8px;margin-top:6px}
+.msg.user .msg-meta{justify-content:flex-end}
+.msg-time{font-size:10px;color:var(--text3);font-family:var(--font-head);letter-spacing:0.03em}
+.sources-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.schip{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:10.5px;color:var(--text3);font-family:var(--font-head);font-weight:500}
+.schip-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* THINKING */
+.thinking{display:flex;gap:13px;padding:14px 0;align-items:center;animation:msgIn 0.22s ease both}
+.think-inner{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text3);font-family:var(--font-head);font-weight:500}
+.dots span{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--accent);margin-right:3px;animation:blink 1.2s ease-in-out infinite}
+.dots span:nth-child(2){animation-delay:0.2s}
+.dots span:nth-child(3){animation-delay:0.4s}
+@keyframes blink{0%,80%,100%{opacity:0.2}40%{opacity:1}}
+
+/* INPUT */
+.input-area{flex-shrink:0;padding:14px 22px 18px;background:rgba(13,13,24,0.9);backdrop-filter:blur(12px);border-top:1px solid var(--border);position:relative;z-index:2}
+.input-wrap{max-width:780px;margin:0 auto;background:var(--surface);border:1px solid var(--border2);border-radius:15px;display:flex;align-items:flex-end;padding:11px 13px;gap:10px;transition:all 0.2s}
+.input-wrap:focus-within{border-color:rgba(124,106,255,0.5);box-shadow:0 0 0 3px rgba(124,106,255,0.12),0 4px 24px rgba(0,0,0,0.3)}
+.input-box{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:14.5px;line-height:1.55;resize:none;min-height:24px;max-height:160px;overflow-y:auto}
+.input-box::placeholder{color:var(--text3)}
+.input-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.icon-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);transition:all 0.14s}
+.icon-btn:hover{background:var(--surface2);color:var(--text2);border-color:var(--border2)}
+.send-btn{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#a78bff);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.16s;box-shadow:0 0 16px rgba(124,106,255,0.3)}
+.send-btn:hover{transform:scale(1.06);box-shadow:0 0 24px rgba(124,106,255,0.5)}
+.send-btn:active{transform:scale(0.94)}
+.send-btn:disabled{background:var(--surface2);box-shadow:none;cursor:default;transform:none}
+.send-btn svg{width:15px;height:15px}
+.input-footer{max-width:780px;margin:8px auto 0;display:flex;align-items:center;justify-content:space-between}
+.input-hint{font-size:11px;color:var(--text3)}
+.kbd-hints{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3)}
+.kbd{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-size:10px;font-family:monospace;color:var(--text2)}
+
+@media(max-width:680px){
+  .sidebar{display:none}
+  .cgrid{grid-template-columns:1fr 1fr}
+  .welcome h1{font-size:26px}
+  .stats-strip{display:none}
+  .sp-stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SCHEME DETAIL PANEL (MODAL) -->
+<div class="scheme-panel" id="scheme-panel" onclick="closePanelOutside(event)">
+  <div class="sp-box" id="sp-box"></div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(167,139,255,0.9)" stroke-width="1.5"/>
+        <circle cx="12" cy="12" r="1.5" fill="#a78bff"/>
+        <circle cx="12" cy="4.5" r="1.8" fill="none" stroke="rgba(124,106,255,0.7)" stroke-width="1.2"/>
+        <circle cx="12" cy="4.5" r="0.8" fill="#7c6aff"/>
+        <circle cx="12" cy="19.5" r="1.8" fill="none" stroke="rgba(124,106,255,0.7)" stroke-width="1.2"/>
+        <circle cx="12" cy="19.5" r="0.8" fill="#7c6aff"/>
+        <circle cx="4.5" cy="12" r="1.8" fill="none" stroke="rgba(124,106,255,0.7)" stroke-width="1.2"/>
+        <circle cx="4.5" cy="12" r="0.8" fill="#7c6aff"/>
+        <circle cx="19.5" cy="12" r="1.8" fill="none" stroke="rgba(124,106,255,0.7)" stroke-width="1.2"/>
+        <circle cx="19.5" cy="12" r="0.8" fill="#7c6aff"/>
+        <line x1="12" y1="6.3" x2="12" y2="8" stroke="rgba(124,106,255,0.4)" stroke-width="1"/>
+        <line x1="12" y1="16" x2="12" y2="17.7" stroke="rgba(124,106,255,0.4)" stroke-width="1"/>
+        <line x1="6.3" y1="12" x2="8" y2="12" stroke="rgba(124,106,255,0.4)" stroke-width="1"/>
+        <line x1="16" y1="12" x2="17.7" y2="12" stroke="rgba(124,106,255,0.4)" stroke-width="1"/>
+        <path d="M12 1.5 L12.4 3.2 L12 3.8 L11.6 3.2 Z" fill="#c4b0ff" opacity="0.8"/>
+        <path d="M12 22.5 L12.4 20.8 L12 20.2 L11.6 20.8 Z" fill="#c4b0ff" opacity="0.8"/>
+        <path d="M1.5 12 L3.2 12.4 L3.8 12 L3.2 11.6 Z" fill="#c4b0ff" opacity="0.8"/>
+        <path d="M22.5 12 L20.8 12.4 L20.2 12 L20.8 11.6 Z" fill="#c4b0ff" opacity="0.8"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-title">AI ASSISITANCE</div>
+      <div class="logo-sub">Government Schemes · India</div>
+    </div>
+  </div>
+
+  <div class="sb-scroll" id="sb-scroll">
+    <button class="new-btn" onclick="newChat()">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 1v12M1 7h12"/></svg>
+      New conversation
+    </button>
+
+    <div class="sb-label">Today</div>
+    <div id="today-items"></div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-label">Yesterday</div>
+    <div class="sb-item" data-idx="2" onclick="loadHistory(2)">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1a6 6 0 100 12A6 6 0 007 1zm0 3.5V7l2 1.5"/></svg>
+      <span class="sb-title">MSME loan eligibility</span>
+    </div>
+    <div class="sb-item" data-idx="3" onclick="loadHistory(3)">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1a6 6 0 100 12A6 6 0 007 1zm0 3.5V7l2 1.5"/></svg>
+      <span class="sb-title">CGTMSE benefits overview</span>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-label">This Week</div>
+    <div class="sb-item" data-idx="4" onclick="loadHistory(4)">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1a6 6 0 100 12A6 6 0 007 1zm0 3.5V7l2 1.5"/></svg>
+      <span class="sb-title">PMEGP scheme details</span>
+    </div>
+  </div>
+
+  <div class="sb-foot">
+    <div class="user-row">
+      <div class="uavatar">U</div>
+      <div>
+        <div class="uinfo-name">AI User</div>
+        <div class="uinfo-plan">Free plan · India</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="model-pill">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;opacity:0.8">
+        <circle cx="12" cy="12" r="4" fill="none" stroke="#a78bff" stroke-width="1.5"/>
+        <circle cx="12" cy="12" r="1.5" fill="#a78bff"/>
+        <circle cx="12" cy="4.5" r="1.5" fill="#7c6aff"/>
+        <circle cx="12" cy="19.5" r="1.5" fill="#7c6aff"/>
+        <circle cx="4.5" cy="12" r="1.5" fill="#7c6aff"/>
+        <circle cx="19.5" cy="12" r="1.5" fill="#7c6aff"/>
+        <line x1="12" y1="6" x2="12" y2="8" stroke="rgba(124,106,255,0.5)" stroke-width="1"/>
+        <line x1="12" y1="16" x2="12" y2="18" stroke="rgba(124,106,255,0.5)" stroke-width="1"/>
+        <line x1="6" y1="12" x2="8" y2="12" stroke="rgba(124,106,255,0.5)" stroke-width="1"/>
+        <line x1="16" y1="12" x2="18" y2="12" stroke="rgba(124,106,255,0.5)" stroke-width="1"/>
+      </svg>
+      <div class="status-dot" id="status-dot"></div>
+      AI Assistant
+    </div>
+    <div class="stat-badge" id="status-text">Connecting…</div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="si"><b>47</b>&nbsp;Active Schemes</div><div class="ss"></div>
+    <div class="si"><b>12</b>&nbsp;Loan Programs</div><div class="ss"></div>
+    <div class="si"><b>Updated</b>&nbsp;April 2025</div><div class="ss"></div>
+    <div class="si"><b>MSME</b>&nbsp;Ministry Data</div><div class="ss"></div>
+    <div class="si"><b>Udyam</b>&nbsp;Portal Linked</div>
+  </div>
+
+  <div class="chat-area" id="chat-area">
+    <div class="msgs-inner" id="messages"></div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea class="input-box" id="input-box"
+        placeholder="Ask about any MSME scheme, policy, loan or eligibility…"
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"></textarea>
+      <div class="input-actions">
+        <button class="icon-btn" title="Attach document">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12.5 6.5L7 12C5.3 13.7 2.6 13.7 1 12S-.7 7.7 1 6L7.5.5C8.7-.7 10.5-.7 11.7.5 12.8 1.7 12.8 3.5 11.7 4.7L5.5 10.5C4.9 11.1 4 11.1 3.5 10.5 3 10 3 9 3.5 8.5L9 3"/>
+          </svg>
+        </button>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()" title="Send">
+          <svg viewBox="0 0 15 15" fill="white"><path d="M2 13.5l11-6.5-11-6.5v5l7.5 1.5-7.5 1.5v5z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="input-footer">
+      <div class="input-hint">Verify important info from government portals.</div>
+      <div class="kbd-hints"><span class="kbd">↵</span>&nbsp;Send &nbsp;<span class="kbd">⇧↵</span>&nbsp;New line</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── CONFIG ─── */
+const API_BASE = "http://localhost:5000";
+
+/* ─── SCHEME DATA (5 remaining schemes) ─── */
+const SCHEMES = {
+  pmegp: {
+    title: "PMEGP",
+    fullTitle: "PM Employment Generation Programme",
+    icon: "💰",
+    iconBg: "rgba(124,106,255,0.12)",
+    accentColor: "#7c6aff",
+    tagColor: "rgba(124,106,255,0.15)",
+    tagText: "#b8aaff",
+    desc: "PMEGP is a central sector scheme for generating employment opportunities through establishment of micro-enterprises in non-farm sector by helping traditional artisans and unemployed youth across rural and urban areas.",
+    stats: [
+      {val:"₹25 Lakh", lbl:"Max Project Cost"},
+      {val:"35%", lbl:"Rural Subsidy"},
+      {val:"15%", lbl:"Urban Subsidy"}
+    ],
+    tags: ["KVIC", "Ministry of MSME", "Self Employment", "Non-Farm"],
+    sections: [
+      {
+        title: "Eligibility",
+        items: [
+          {dot:"#7c6aff", text:"<strong>Age:</strong> 18 years and above"},
+          {dot:"#7c6aff", text:"<strong>Education:</strong> VIII pass for projects above ₹10 Lakh (Mfg.) / ₹5 Lakh (Service)"},
+          {dot:"#7c6aff", text:"<strong>Category:</strong> SC/ST, Women, Ex-servicemen, PwD, NER residents get higher subsidy"},
+          {dot:"#7c6aff", text:"No income ceiling for beneficiary under this scheme"}
+        ]
+      },
+      {
+        title: "Subsidy Details",
+        items: [
+          {dot:"#22d3a0", text:"<strong>General Category:</strong> 15% urban | 25% rural"},
+          {dot:"#22d3a0", text:"<strong>Special Category:</strong> 25% urban | 35% rural"},
+          {dot:"#22d3a0", text:"<strong>Bank Finance:</strong> 90% (general) | 95% (special)"},
+          {dot:"#22d3a0", text:"<strong>Beneficiary Contribution:</strong> 5% (special) | 10% (general)"}
+        ]
+      },
+      {
+        title: "How to Apply",
+        items: [
+          {dot:"#f59e0b", text:"Apply online at <strong>kviconline.gov.in</strong>"},
+          {dot:"#f59e0b", text:"Submit application to nearest KVIC / KVIB / DIC office"},
+          {dot:"#f59e0b", text:"Interview and selection by Task Force Committee"},
+          {dot:"#f59e0b", text:"EDP training mandatory before disbursement"}
+        ]
+      }
+    ],
+    askQ: "What is PMEGP scheme and how to apply?"
+  },
+  loan: {
+    title: "Loan Eligibility",
+    fullTitle: "MSME Government Loan Criteria",
+    icon: "🏦",
+    iconBg: "rgba(34,211,160,0.1)",
+    accentColor: "#22d3a0",
+    tagColor: "rgba(34,211,160,0.12)",
+    tagText: "#22d3a0",
+    desc: "Government-backed MSME loans provide easy credit access to micro, small, and medium enterprises through public sector banks, RRBs, and NBFCs at concessional interest rates under various schemes.",
+    stats: [
+      {val:"₹2 Cr", lbl:"CGTMSE Limit"},
+      {val:"650+", lbl:"CIBIL Score"},
+      {val:"1–2 Yr", lbl:"Min. Vintage"}
+    ],
+    tags: ["PSBs", "SIDBI", "CGTMSE", "Collateral-Free"],
+    sections: [
+      {
+        title: "Basic Requirements",
+        items: [
+          {dot:"#22d3a0", text:"Valid <strong>Udyam Registration</strong> certificate mandatory"},
+          {dot:"#22d3a0", text:"Business vintage of at least <strong>1–2 years</strong>"},
+          {dot:"#22d3a0", text:"CIBIL score <strong>650+</strong> preferred by most lenders"},
+          {dot:"#22d3a0", text:"No existing NPA with any scheduled bank"}
+        ]
+      },
+      {
+        title: "MSME Classification (Revised 2020)",
+        items: [
+          {dot:"#7c6aff", text:"<strong>Micro:</strong> Investment &lt; ₹1 Cr | Turnover &lt; ₹5 Cr"},
+          {dot:"#7c6aff", text:"<strong>Small:</strong> Investment &lt; ₹10 Cr | Turnover &lt; ₹50 Cr"},
+          {dot:"#7c6aff", text:"<strong>Medium:</strong> Investment &lt; ₹50 Cr | Turnover &lt; ₹250 Cr"}
+        ]
+      }
+    ],
+    askQ: "What are MSME loan eligibility criteria?"
+  },
+  udyam: {
+    title: "Udyam Registration",
+    fullTitle: "Udyam Portal — Step-by-Step Guide",
+    icon: "📋",
+    iconBg: "rgba(245,158,11,0.1)",
+    accentColor: "#f59e0b",
+    tagColor: "rgba(245,158,11,0.12)",
+    tagText: "#f59e0b",
+    desc: "Udyam Registration is the official online process for registering Micro, Small and Medium Enterprises in India. It is free, paperless, and based on self-declaration. The Udyam Certificate is required for all government scheme benefits.",
+    stats: [
+      {val:"Free", lbl:"Registration Cost"},
+      {val:"Lifetime", lbl:"Certificate Valid"},
+      {val:"24/7", lbl:"Portal Access"}
+    ],
+    tags: ["Self-Declaration", "Aadhaar-Based", "Free", "udyamregistration.gov.in"],
+    sections: [
+      {
+        title: "Step-by-Step Process",
+        items: [
+          {dot:"#f59e0b", text:"<strong>Step 1:</strong> Visit <strong>udyamregistration.gov.in</strong>"},
+          {dot:"#f59e0b", text:"<strong>Step 2:</strong> Enter Aadhaar number and validate with OTP"},
+          {dot:"#f59e0b", text:"<strong>Step 3:</strong> Fill business details — name, type, PAN, GST, NIC code"},
+          {dot:"#f59e0b", text:"<strong>Step 4:</strong> Enter investment and turnover details"},
+          {dot:"#f59e0b", text:"<strong>Step 5:</strong> Submit and receive Udyam Registration Number instantly"}
+        ]
+      },
+      {
+        title: "Documents Required",
+        items: [
+          {dot:"#22d3a0", text:"Aadhaar card of owner/partner/director"},
+          {dot:"#22d3a0", text:"PAN card of business entity"},
+          {dot:"#22d3a0", text:"GST registration number (if applicable)"},
+          {dot:"#22d3a0", text:"Bank account details"}
+        ]
+      }
+    ],
+    askQ: "How to do Udyam registration for MSME?"
+  },
+  cgtmse: {
+    title: "CGTMSE Benefits",
+    fullTitle: "Credit Guarantee Fund Trust for MSEs",
+    icon: "🛡️",
+    iconBg: "rgba(248,113,113,0.1)",
+    accentColor: "#f87171",
+    tagColor: "rgba(248,113,113,0.12)",
+    tagText: "#f87171",
+    desc: "CGTMSE enables micro and small enterprises to get collateral-free loans from member lending institutions. The trust provides credit guarantee cover to banks, enabling MSMEs to access finance without pledging assets.",
+    stats: [
+      {val:"₹2 Cr", lbl:"Max Loan Cover"},
+      {val:"85%", lbl:"Max Guarantee"},
+      {val:"85+", lbl:"Member Banks"}
+    ],
+    tags: ["Collateral-Free", "SIDBI", "Ministry of MSME", "PSBs & RRBs"],
+    sections: [
+      {
+        title: "Coverage Details",
+        items: [
+          {dot:"#f87171", text:"Loans up to <strong>₹2 crore</strong> without collateral or third-party guarantee"},
+          {dot:"#f87171", text:"Coverage: <strong>75–85%</strong> of credit facility amount"},
+          {dot:"#f87171", text:"85% for loans up to ₹5 lakh to micro enterprises"},
+          {dot:"#f87171", text:"Available for both new and existing MSMEs"}
+        ]
+      },
+      {
+        title: "Fees & Charges",
+        items: [
+          {dot:"#22d3a0", text:"Annual Guarantee Fee (AGF): <strong>0.37% to 1.35%</strong> based on category"},
+          {dot:"#22d3a0", text:"Women/NER/SC/ST entrepreneurs get <strong>reduced AGF</strong>"},
+          {dot:"#22d3a0", text:"No upfront collateral or third-party guarantee required"}
+        ]
+      }
+    ],
+    askQ: "What are CGTMSE benefits for small businesses?"
+  },
+  zed: {
+    title: "ZED Scheme",
+    fullTitle: "Zero Defect Zero Effect Certification",
+    icon: "⭐",
+    iconBg: "rgba(245,158,11,0.1)",
+    accentColor: "#f59e0b",
+    tagColor: "rgba(245,158,11,0.12)",
+    tagText: "#fbbf24",
+    desc: "ZED (Zero Defect Zero Effect) Certification is a Government of India initiative under the Ministry of MSME to encourage MSMEs to make products with zero defects and zero adverse environmental effects, improving quality for global competitiveness.",
+    stats: [
+      {val:"80%", lbl:"Subsidy (Micro)"},
+      {val:"60%", lbl:"Subsidy (Small)"},
+      {val:"3", lbl:"Rating Levels"}
+    ],
+    tags: ["Quality", "Certification", "QCI", "Export Ready"],
+    sections: [
+      {
+        title: "Rating Levels",
+        items: [
+          {dot:"#cd7f32", text:"<strong>Bronze:</strong> Entry level — basic quality processes in place"},
+          {dot:"#c0c0c0", text:"<strong>Silver:</strong> Intermediate level — systematic quality management"},
+          {dot:"#ffd700", text:"<strong>Gold:</strong> Advanced level — excellence in quality and environmental practices"}
+        ]
+      },
+      {
+        title: "Subsidies Available",
+        items: [
+          {dot:"#22d3a0", text:"<strong>Micro enterprises:</strong> 80% subsidy on certification cost"},
+          {dot:"#22d3a0", text:"<strong>Small enterprises:</strong> 60% subsidy on certification cost"},
+          {dot:"#22d3a0", text:"<strong>Medium enterprises:</strong> 50% subsidy on certification cost"},
+          {dot:"#22d3a0", text:"Additional 10% subsidy for NER, Hill states, women/SC/ST owners"}
+        ]
+      },
+      {
+        title: "Benefits",
+        items: [
+          {dot:"#f59e0b", text:"Access to government procurement and export markets"},
+          {dot:"#f59e0b", text:"Eligible for <strong>preference in bank loans</strong> and lower interest rates"},
+          {dot:"#f59e0b", text:"Improved brand reputation and market competitiveness"},
+          {dot:"#f59e0b", text:"Apply at <strong>zed.msme.gov.in</strong>"}
+        ]
+      }
+    ],
+    askQ: "What is ZED certification scheme for MSMEs and how to get it?"
+  }
+};
+
+/* ─── STATE ─── */
+let loading = false;
+let currentChat = -1;
+let nextIdx = 100;
+
+/* ─── SEEDED HISTORY DATA ─── */
+const HD = {
+  2:[
+    {role:'user',text:'What are MSME loan eligibility criteria?',time:'Yesterday 11:45 AM'},
+    {role:'ai',text:'**MSME Loan Eligibility** generally requires:\n\n- Valid **Udyam Registration** certificate\n- Business vintage of at least 1–2 years\n- Good credit score (CIBIL 650+ preferred)\n- Annual turnover within MSME classification limits\n- No existing NPA with any scheduled bank\n\n**Classification Limits (revised 2020):**\n- **Micro**: Investment < ₹1 Cr | Turnover < ₹5 Cr\n- **Small**: Investment < ₹10 Cr | Turnover < ₹50 Cr\n- **Medium**: Investment < ₹50 Cr | Turnover < ₹250 Cr',time:'Yesterday 11:46 AM'}
+  ],
+  3:[
+    {role:'user',text:'What are CGTMSE benefits for small businesses?',time:'Yesterday 9:00 AM'},
+    {role:'ai',text:'**CGTMSE** (Credit Guarantee Fund Trust for Micro and Small Enterprises) enables collateral-free loans.\n\n**Benefits:**\n- Loans up to **₹2 crore** without collateral or third-party guarantee\n- Coverage: 75–85% of the credit facility amount\n- Available for both new and existing MSMEs\n- Annual guarantee fee: 0.37% to 1.35% based on category\n\nMember institutions include PSBs, private banks, RRBs, and SFBs.',time:'Yesterday 9:01 AM'}
+  ],
+  4:[
+    {role:'user',text:'What are PMEGP scheme details?',time:'This week 1:00 PM'},
+    {role:'ai',text:'**PMEGP — Key Details:**\n\n- **Nodal Agency**: KVIC at national level\n- **Target**: Unemployed youth, traditional artisans, women, SC/ST\n- **Subsidy**: General — 15% urban / 25% rural | Special — 25% urban / 35% rural\n- **Bank finance**: 90% (general), 95% (special categories)\n- **Beneficiary contribution**: 5–10% of project cost\n\nSpecial categories: SC/ST, women, ex-servicemen, minorities, PwD, NER residents.',time:'This week 1:01 PM'}
+  ]
+};
+
+/* ─── SCHEME PANEL ─── */
+function openScheme(key) {
+  const s = SCHEMES[key];
+  if (!s) return;
+  const panel = document.getElementById('scheme-panel');
+  const box = document.getElementById('sp-box');
+
+  const statsHtml = s.stats.map(st => `
+    <div class="sp-stat">
+      <div class="sp-stat-val" style="color:${s.accentColor}">${st.val}</div>
+      <div class="sp-stat-lbl">${st.lbl}</div>
+    </div>`).join('');
+
+  const tagsHtml = s.tags.map(t => `
+    <span class="sp-tag" style="background:${s.tagColor};color:${s.tagText}">${t}</span>`).join('');
+
+  const sectionsHtml = s.sections.map(sec => `
+    <div class="sp-section">
+      <div class="sp-section-title">${sec.title}</div>
+      <div class="sp-items">
+        ${sec.items.map(it => `
+          <div class="sp-item">
+            <div class="sp-item-dot" style="background:${it.dot}"></div>
+            <span>${it.text}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  box.innerHTML = `
+    <div class="sp-header">
+      <div class="sp-icon" style="background:${s.iconBg}">${s.icon}</div>
+      <div class="sp-title-wrap">
+        <div class="sp-title">${s.title}</div>
+        <div class="sp-subtitle">${s.fullTitle}</div>
+      </div>
+      <button class="sp-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="sp-body">
+      <div class="sp-desc">${s.desc}</div>
+      <div class="sp-stats">${statsHtml}</div>
+      <div class="sp-tags">${tagsHtml}</div>
+      ${sectionsHtml}
+      <button class="sp-ask-btn" onclick="askFromPanel('${s.askQ.replace(/'/g,"\\'")}')">
+        <svg width="14" height="14" viewBox="0 0 15 15" fill="white"><path d="M2 13.5l11-6.5-11-6.5v5l7.5 1.5-7.5 1.5v5z"/></svg>
+        Ask AI about ${s.title}
+      </button>
+    </div>`;
+
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('scheme-panel').classList.remove('open');
+}
+
+function closePanelOutside(e) {
+  if (e.target === document.getElementById('scheme-panel')) closePanel();
+}
+
+function askFromPanel(q) {
+  closePanel();
+  setTimeout(() => ask(q), 100);
+}
+
+/* ─── UTILS ─── */
+function lsGetChats()  { try { return JSON.parse(localStorage.getItem('msme_today_chats') || '{}'); } catch { return {}; } }
+function lsSaveChats(o){ try { localStorage.setItem('msme_today_chats', JSON.stringify(o)); } catch {} }
+function lsGetMeta()   { try { return JSON.parse(localStorage.getItem('msme_today_meta')  || '[]'); } catch { return []; } }
+function lsSaveMeta(a) { try { localStorage.setItem('msme_today_meta',  JSON.stringify(a)); } catch {} }
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px'}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}}
+function ask(q){const b=document.getElementById('input-box');b.value=q;autoResize(b);sendMsg()}
+function scrollBottom(){const c=document.getElementById('chat-area');c.scrollTop=c.scrollHeight}
+function nowTime(){return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmt(t){
+  return t
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/\n\n/g,'</p><p style="margin-top:8px">')
+    .replace(/\n/g,'<br>')
+    .replace(/^/,'<p>').replace(/$/,'</p>');
+}
+
+function mkDateSep(label){
+  const d=document.createElement('div');
+  d.className='date-sep';
+  d.innerHTML=`<div class="ds-line"></div><div class="ds-text">${esc(label)}</div><div class="ds-line"></div>`;
+  return d;
+}
+
+function mkMsg(role,text,time,sources){
+  const div=document.createElement('div');
+  div.className=`msg ${role==='ai'?'ai':'user'}`;
+  let src='';
+  if(sources&&sources.length){
+    src=`<div class="sources-row">${sources.map(s=>`<div class="schip"><div class="schip-dot"></div>${esc(s.category||'')} · ${esc(s.pdf_name||s.title||'')}</div>`).join('')}</div>`;
+  }
+  const aiAvHtml = `<div class="av ai">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="1.5" fill="white"/>
+      <circle cx="12" cy="4.5" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="12" cy="19.5" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="4.5" cy="12" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="19.5" cy="12" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <line x1="12" y1="5.8" x2="12" y2="8" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+      <line x1="12" y1="16" x2="12" y2="18.2" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+      <line x1="5.8" y1="12" x2="8" y2="12" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+      <line x1="16" y1="12" x2="18.2" y2="12" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    </svg>
+  </div>`;
+  div.innerHTML=`
+    ${role==='ai' ? aiAvHtml : '<div class="av usr">You</div>'}
+    <div>
+      <div class="bubble">${role==='ai'?fmt(text):esc(text)}${src}</div>
+      <div class="msg-meta"><span class="msg-time">${esc(time||'')}</span></div>
+    </div>`;
+  return div;
+}
+
+/* ─── WELCOME ─── */
+function showWelcome(){
+  document.getElementById('messages').innerHTML=`
+  <div class="welcome" id="welcome-screen">
+    <div class="w-badge"><div class="w-badge-dot"></div>AI-Powered · India Portal</div>
+    <h1>Your <span class="hi">AI ASSISITANCE</span><br>guide is ready.</h1>
+    <p>Ask anything about government schemes, loans, Udyam registration, eligibility, and policies for small businesses in India.</p>
+    <div class="tpills">
+      <div class="tpill" onclick="ask('What is PMEGP scheme?')">PMEGP</div>
+      <div class="tpill" onclick="ask('How to register on Udyam portal?')">Udyam Portal</div>
+      <div class="tpill" onclick="ask('What is CGTMSE scheme?')">CGTMSE</div>
+      <div class="tpill" onclick="ask('ZED Zero Defect certification for MSME')">ZED Scheme</div>
+    </div>
+    <div class="cgrid">
+      <div class="wcard" onclick="openScheme('pmegp')">
+        <div class="wcard-icon" style="background:rgba(124,106,255,0.12)">💰</div>
+        <strong>PMS / PMEGP</strong><p>PM Employment Generation Programme &amp; application guide</p>
+      </div>
+      <div class="wcard" onclick="openScheme('loan')">
+        <div class="wcard-icon" style="background:rgba(34,211,160,0.1)">🏦</div>
+        <strong>Loan Eligibility</strong><p>Government loan criteria, documents &amp; classification</p>
+      </div>
+      <div class="wcard" onclick="openScheme('udyam')">
+        <div class="wcard-icon" style="background:rgba(245,158,11,0.1)">📋</div>
+        <strong>Udyam Registration</strong><p>Step-by-step Udyam portal registration guide</p>
+      </div>
+      <div class="wcard" onclick="openScheme('cgtmse')">
+        <div class="wcard-icon" style="background:rgba(248,113,113,0.1)">🛡️</div>
+        <strong>CGTMSE Benefits</strong><p>Collateral-free credit guarantee scheme details</p>
+      </div>
+      <div class="wcard" onclick="openScheme('zed')">
+        <div class="wcard-icon" style="background:rgba(245,158,11,0.1)">⭐</div>
+        <strong>ZED Scheme</strong><p>Zero Defect Zero Effect quality certification &amp; subsidy</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function hideWelcome(){const w=document.getElementById('welcome-screen');if(w)w.remove()}
+
+/* ─── LOAD HISTORY ─── */
+function loadHistory(idx){
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+  const el=document.querySelector(`.sb-item[data-idx="${idx}"]`);
+  if(el) el.classList.add('active');
+  currentChat=Number(idx);
+  const msgs=document.getElementById('messages');
+  msgs.innerHTML='';
+  const liveChats=lsGetChats();
+  const hist=liveChats[idx]||HD[idx]||[];
+  if(!hist.length) return;
+  const t0=String(hist[0].time||'');
+  let label='Today';
+  if(t0.toLowerCase().startsWith('yesterday')) label='Yesterday';
+  else if(/\d+ days? ago/.test(t0)) label=t0.split(' ').slice(0,3).join(' ');
+  msgs.appendChild(mkDateSep(label));
+  hist.forEach(m=>msgs.appendChild(mkMsg(m.role,m.text,m.time,m.sources||[])));
+  scrollBottom();
+}
+
+function newChat(){
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+  currentChat=-1;showWelcome();document.getElementById('input-box').focus();
+}
+
+function addSidebarItem(idx,label,isActive){
+  const container=document.getElementById('today-items');
+  if(isActive) document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+  const item=document.createElement('div');
+  item.className='sb-item'+(isActive?' active':'');
+  item.setAttribute('data-idx',String(idx));
+  item.onclick=()=>loadHistory(idx);
+  const short=esc(label.substring(0,34)+(label.length>34?'…':''));
+  item.innerHTML=`
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1a6 6 0 100 12A6 6 0 007 1zm0 3.5V7l2 1.5"/></svg>
+    <span class="sb-title">${short}</span>
+    <span class="sb-del" onclick="delToday(event,${idx})">✕</span>`;
+  container.insertBefore(item,container.firstChild);
+}
+
+function delToday(e,idx){
+  e.stopPropagation();
+  const el=document.querySelector(`.sb-item[data-idx="${idx}"]`);
+  if(el) el.remove();
+  const chats=lsGetChats();delete chats[idx];lsSaveChats(chats);
+  const meta=lsGetMeta().filter(m=>m.idx!==idx);lsSaveMeta(meta);
+  if(currentChat===idx){currentChat=-1;showWelcome();}
+}
+
+function showThinking(){
+  const msgs=document.getElementById('messages');
+  const d=document.createElement('div');
+  d.className='thinking';d.id='thk';
+  d.innerHTML=`<div class="av ai">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="1.5" fill="white"/>
+      <circle cx="12" cy="4.5" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="12" cy="19.5" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="4.5" cy="12" r="1.3" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="19.5" cy="12" r="1.3" fill="rgba(255,255,255,0.7)"/>
+    </svg>
+  </div><div class="think-inner"><div class="dots"><span></span><span></span><span></span></div>Searching knowledge base…</div>`;
+  msgs.appendChild(d);scrollBottom();
+}
+function removeThinking(){const t=document.getElementById('thk');if(t)t.remove()}
+
+/* ─── SEND ─── */
+async function sendMsg(){
+  if(loading) return;
+  const box=document.getElementById('input-box');
+  const q=box.value.trim();
+  if(!q) return;
+  hideWelcome();loading=true;box.value='';box.style.height='auto';
+  document.getElementById('send-btn').disabled=true;
+  const t=nowTime();
+  const msgs=document.getElementById('messages');
+  if(!msgs.querySelector('.date-sep')) msgs.appendChild(mkDateSep('Today'));
+  msgs.appendChild(mkMsg('user',q,t,null));
+  showThinking();
+  try{
+    const res=await fetch(`${API_BASE}/api/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})});
+    const data=await res.json();
+    removeThinking();
+    if(data.error) throw new Error(data.error);
+    const at=nowTime();
+    msgs.appendChild(mkMsg('ai',data.answer||'No answer returned.',at,data.sources||[]));
+    if(currentChat===-1){
+      const ni=nextIdx++;
+      const newMsgs=[
+        {role:'user',text:q,time:t,sources:[]},
+        {role:'ai',text:data.answer||'',time:at,sources:data.sources||[]}
+      ];
+      const chats=lsGetChats();chats[ni]=newMsgs;lsSaveChats(chats);
+      const meta=lsGetMeta();meta.unshift({idx:ni,label:q});lsSaveMeta(meta);
+      addSidebarItem(ni,q,true);currentChat=ni;
+    } else {
+      const chats=lsGetChats();
+      if(!chats[currentChat]) chats[currentChat]=[];
+      chats[currentChat].push(
+        {role:'user',text:q,time:t,sources:[]},
+        {role:'ai',text:data.answer||'',time:at,sources:data.sources||[]}
+      );
+      lsSaveChats(chats);
+    }
+  } catch(err){
+    removeThinking();
+    const d=document.createElement('div');
+    d.className='msg ai';
+    d.innerHTML=`<div class="av ai" style="background:rgba(248,113,113,0.2)">⚠</div><div class="bubble" style="color:var(--red);font-size:14px">${esc(err.message)}</div>`;
+    msgs.appendChild(d);
+  }
+  scrollBottom();loading=false;
+  document.getElementById('send-btn').disabled=false;box.focus();
+}
+
+/* ─── BACKEND CHECK ─── */
+async function checkBackend(){
+  try{
+    const res=await fetch(`${API_BASE}/api/info`);
+    const data=await res.json();
+    if(data.error) throw new Error();
+    document.getElementById('status-dot').className='status-dot online';
+    document.getElementById('status-text').innerHTML=`<b>${(data.points||0).toLocaleString()}</b> chunks ready`;
+  } catch{
+    document.getElementById('status-dot').className='status-dot';
+    document.getElementById('status-text').textContent='Backend offline';
+  }
+}
+
+function restoreTodayHistory(){
+  const meta=lsGetMeta();
+  if(!meta.length) return;
+  meta.forEach(m=>{
+    if(m.idx>=nextIdx) nextIdx=m.idx+1;
+    addSidebarItem(m.idx,m.label,false);
+  });
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closePanel(); });
+
+checkBackend();
+restoreTodayHistory();
+showWelcome();
+document.getElementById('input-box').focus();
+</script>
+</body>
+</html>
