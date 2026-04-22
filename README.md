@@ -116,6 +116,14 @@ QDRANT_API_KEY=your_qdrant_api_key
 
 ---
 
+🚀 Future Enhancements
+Voice-based assistant
+Mobile application
+Real-time data updates
+Advanced AI models
+
+---
+
 
 ## ▶️ How to Run
 ```bash
@@ -128,14 +136,6 @@ venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 python app.py
 
-
----
-
-🚀 Future Enhancements
-Voice-based assistant
-Mobile application
-Real-time data updates
-Advanced AI models
 
 ---
 
