@@ -109,15 +109,9 @@ The system uses Retrieval-Augmented Generation (RAG) to:
 ## 🔐 Environment Setup
 
 ### Create `.env` file:
-OPENAI_API_KEY=your_openai_api_key
-QDRANT_URL=your_qdrant_url
-QDRANT_API_KEY=your_qdrant_api_key
-
----
-
-⚠️ Note:
-- Do NOT upload `.env` file to GitHub  
-- Use `.env.example` for sharing  
+- OPENAI_API_KEY="your_openai_api_key"
+- QDRANT_URL="your_qdrant_url"
+- QDRANT_API_KEY="your_qdrant_api_key"
 
 ---
 
@@ -134,7 +128,6 @@ QDRANT_API_KEY=your_qdrant_api_key
 This project presents an AI-Based Assistance System for Enterprise Support using Retrieval-Augmented Generation (RAG), which effectively combines information retrieval with advanced language models to provide accurate and context-aware responses. The system improves the efficiency of enterprise support by reducing manual effort, minimizing response time, and delivering reliable information from large document collections. By using vector databases and semantic search, it overcomes the limitations of traditional keyword-based systems. The project demonstrates the practical implementation of modern AI techniques in real-world applications and highlights its potential to enhance productivity, scalability, and user experience in enterprise environments.
 
 ---
-
 
 ## ▶️ How to Run
 ```bash
