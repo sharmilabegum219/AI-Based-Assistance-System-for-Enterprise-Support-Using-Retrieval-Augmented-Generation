@@ -93,11 +93,16 @@ The system uses Retrieval-Augmented Generation (RAG) to:
 
 ## 📂 Project Structure
 ├── app.py
-├── frontend/
+
+├── msme_frontend.html
+
 ├── requirements.txt
+
 ├── README.md
+
 ├── .gitignore
-├── .env.example
+
+├── .env
 
 ---
 
