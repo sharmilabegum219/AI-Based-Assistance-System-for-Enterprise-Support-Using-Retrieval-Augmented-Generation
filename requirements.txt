@@ -1,0 +1,13 @@
+flask
+flask-cors
+python-dotenv
+openai
+langchain
+langchain-openai
+langchain-community
+langchain-qdrant
+langchain-text-splitters
+qdrant-client
+pymupdf
+pypdfium2
+pypdf
